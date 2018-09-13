@@ -2,7 +2,7 @@
 
 	require_once 'vendor/autoload.php';
 
-	if (isset($_POST['_DocToDocx'])) {
+	if (isset($_POST['submit'])) {
 	
 		$inputFile = "file";
 	    $target_dir = __DIR__."/uploaded_files/";
@@ -10,7 +10,11 @@
 	    $target_file = $target_dir . $newfilename;
 
 	    if (move_uploaded_file($_FILES[$inputFile]["tmp_name"], $target_file)) {  
-			DocToDocx($newfilename);
+			if ($_POST['From'] == 'DOC' && $_POST['To'] == 'DOCX') {
+				DocToDocx($newfilename);
+			}
+
+			
 	  	}
 
 	}
@@ -49,6 +53,7 @@
 <html>
 <head>
 	<title>Document PHP</title>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 	<style type="text/css">
 body {
     padding: 50px;
@@ -83,21 +88,49 @@ input{
     letter-spacing: 0.09375rem;
     background: #fff;
 }
+form {
+    border: 2px solid #eee;
+    padding: 20px;
+}
 	</style> 		
 </head>
 <body>
 	<div class="container">
 		<h1>Document PHP</h1>
-		<hr>
-		<h4>Doc to Docx</h4>
 		<form action="" method="POST" enctype="multipart/form-data">
-			<input type="file" name="file">
-			<input type="submit" class="btn" value="Convert" name="_DocToDocx">
+			<div class="row justify-content-center">
+				<div class="form-group col-md-2">
+				    <label>From</label>
+				    <select name="From" class="form-control">
+				      <option>DOC</option>
+				    </select>
+				</div>	
+				<div class="form-group col-md-2">
+				    <label>To</label>
+				    <select name="To" class="form-control">
+				      <option>DOCX</option>
+				    </select>
+				</div>
+			</div>
+			
+			<div class="row justify-content-center">
+				<div class="col-md-4"> 
+					<input type="file" class="form-control" name="file">
+				</div>
+			</div>
+			<div class="row mt-2">
+				<div class="col"> 
+					<input type="submit" class="btn" value="Convert" name="submit">
+				</div>
+			</div>
+			
 		</form>
-		<hr>
 		
 		</div>
 	</div>
+	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 </body>
 </html>
 
