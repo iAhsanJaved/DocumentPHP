@@ -12,6 +12,10 @@
 	    if (move_uploaded_file($_FILES[$inputFile]["tmp_name"], $target_file)) {  
 			if ($_POST['From'] == 'DOC' && $_POST['To'] == 'DOCX') {
 				DocToDocx($newfilename);
+			} else if ($_POST['From'] == 'DOC' && $_POST['To'] == 'ODT') {
+				DocToODT($newfilename);
+			} else if ($_POST['From'] == 'DOC' && $_POST['To'] == 'RTF') {
+				DocToRTF($newfilename);
 			}
 
 			
@@ -26,6 +30,56 @@
 		$phpWord = \PhpOffice\PhpWord\IOFactory::load($filePath, 'MsDoc');
 		$xmlWriter = \PhpOffice\PhpWord\IOFactory::createWriter($phpWord, 'Word2007');
 		$resultFileName = "Result.docx";
+		$xmlWriter->save($resultFileName);
+		unlink($filePath); // Delete uploaded file
+
+		header('Content-Description: File Transfer');
+		header('Content-Type: application/octet-stream');
+		header('Content-Disposition: attachment; filename='.$resultFileName);
+		header('Content-Transfer-Encoding: binary');
+		header('Expires: 0');
+		header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+		header('Pragma: public');
+		header('Content-Length: ' . filesize($resultFileName));
+		flush();
+		readfile($resultFileName);
+		unlink($resultFileName); // deletes the temporary file
+		exit;
+
+	}
+
+	function DocToODT($filename)
+	{
+		$filePath = __DIR__."/uploaded_files/".$filename;
+		$object = new \PhpOffice\PhpWord\PhpWord();
+		$phpWord = \PhpOffice\PhpWord\IOFactory::load($filePath, 'MsDoc');
+		$xmlWriter = \PhpOffice\PhpWord\IOFactory::createWriter($phpWord, 'ODText');
+		$resultFileName = "Result.odt";
+		$xmlWriter->save($resultFileName);
+		unlink($filePath); // Delete uploaded file
+
+		header('Content-Description: File Transfer');
+		header('Content-Type: application/octet-stream');
+		header('Content-Disposition: attachment; filename='.$resultFileName);
+		header('Content-Transfer-Encoding: binary');
+		header('Expires: 0');
+		header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+		header('Pragma: public');
+		header('Content-Length: ' . filesize($resultFileName));
+		flush();
+		readfile($resultFileName);
+		unlink($resultFileName); // deletes the temporary file
+		exit;
+
+	}
+
+	function DocToRTF($filename)
+	{
+		$filePath = __DIR__."/uploaded_files/".$filename;
+		$object = new \PhpOffice\PhpWord\PhpWord();
+		$phpWord = \PhpOffice\PhpWord\IOFactory::load($filePath, 'MsDoc');
+		$xmlWriter = \PhpOffice\PhpWord\IOFactory::createWriter($phpWord, 'RTF');
+		$resultFileName = "Result.rtf";
 		$xmlWriter->save($resultFileName);
 		unlink($filePath); // Delete uploaded file
 
@@ -109,6 +163,8 @@ form {
 				    <label>To</label>
 				    <select name="To" class="form-control">
 				      <option>DOCX</option>
+				      <option>ODT</option>
+				      <option>RTF</option>
 				    </select>
 				</div>
 			</div>
